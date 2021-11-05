@@ -1,0 +1,193 @@
+//Note: these functions were integrated into existing classes made by other group members.
+//I do not have any other parts of the project.
+
+void generateMoves()
+{
+	for(int i = 0; i < game->MAXR; i++)
+	{
+		for(int j = 0; j < game->MAXC; j++)
+		{
+			possMoves->board[i][j] = false;
+		}
+	}
+
+	//Queen
+	dirs = 8;
+	rows = {-1, -1, -1,  0, 0,  1, 1, 1};
+	cols = {-1,  0,  1, -1, 1, -1, 0, 1};
+	single = false;
+
+	//King
+	dirs = 10;
+	rows = {-1, -1, -1,  0, 0,  1, 1, 1, -2, 2};
+	cols = {-1,  0,  1, -1, 1, -1, 0, 1,  0, 0};
+	single = true;
+
+	//Rook
+	dirs = 4;
+	rows = {-1, 0, 0, 1};
+	cols = {0, -1, 1, 0};
+	single = false;
+
+	//Bishop
+	dirs = 4;
+	rows = {-1, -1,  1, 1};
+	cols = {-1,  1, -1, 1};
+	single = false;
+
+	//Knight
+	dirs = 8;
+	cols = {-2, -1,  1,  2, -2, -1, 1, 2};
+	rows = {-1, -2, -2, -1,  1,  2, 2, 1};
+	single = true;
+
+	//White Pawn
+	dirs = 2;
+	rows = {-1, -2, -1, -1};
+	cols = { 0,  0, -1,  1};
+	single = true;
+
+	//Black Pawn
+	dirs = 2;
+	rows = {1, 2,  1, 1};
+	cols = {0, 0, -1, 1};
+	single = true;
+
+	for(int dir = 0; dir < dirs; dir++)
+	{
+		//Diagonal up/left
+		Tile* toCheck = pos;
+		r = toCheck->row;
+		c = toCheck->col;
+		while(true)
+		{
+			r += rows[dir];
+			c += cols[dir];
+			toCheck = game->board[r][c];
+			if(toCheck->piece == null)
+			{
+				possMoves[r][c] = true;
+			}
+			if(toCheck->piece != null && toCheck->occupiedBy() != team)
+			{
+				possMoves->board[r][c] = true;
+				break;
+			}
+			if(single)
+			{
+				break;
+			}
+		}
+	
+	}
+}
+
+bool canMove(Tile* dest)
+{
+	return possMoves->board[dest->row][dest->col];
+}
+
+bool move(Tile* dest)
+{
+	if(canMove(dest)
+	{
+		this->pos->piece = null;
+		if(dest->piece != null)
+		{
+			delete dest->piece;
+		}
+		dest->piece = this;
+		this->pos = dest;
+		this->hasMoved = true;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+PossibleMoves* testMove(Tile* origin, Tile* dest)
+{
+	bool[MAXR][MAXC] pm;
+	for(int i = 0; i < game->MAXR; i++)
+	{
+		for(int j = 0; j < game->MAXC; j++)
+		{
+			pm[i][j] = false;
+		}
+	}
+
+	for(int dir = 0; dir < dirs; dir++)
+	{
+		//Diagonal up/left
+		Tile* toCheck = pos;
+		int r = toCheck->row;
+		int c = toCheck->col;
+		Piece* temp;
+		while(true)
+		{
+			r += rows[dir];
+			c += cols[dir];
+			toCheck = game->board[r][c];
+			temp = toCheck->piece;
+			if(r == dest->row && c == dest->col)
+			{
+				toCheck->piece = origin->piece;
+			}
+			else if(r == origin->row && c == origin->col)
+			{
+				toCheck->piece = null;
+			}
+
+			if(toCheck->piece == null)
+			{
+				pm[r][c] = true;
+			}
+			else if(toCheck->piece != null && toCheck->occupiedBy() != team)
+			{
+				pm[r][c] = true;
+				break;
+			}
+
+			if(single)
+			{
+				break;
+			}
+		}
+		toCheck->piece = temp;
+	
+	}
+	return (new PossibleMoves(pm));
+}
+
+bool inDanger()
+{
+	PossibleMoves* pm;
+	for(int i = 0; i < numPieces; i++)
+	{
+		pm = /*player*/->piece[i]->possMoves;
+		if(pm->board[pos->row][pos->col] == true)
+		{
+			return false;
+		}
+	}
+	
+	return true;	
+}
+
+bool testInDanger(Tile* origin, Tile* dest)
+{
+	PossibleMoves* pm;
+	for(int i = 0; i < numPieces; i++)
+	{
+		pm = /*player*/->piece[i]->testMove(origin, dest);
+		if(pm->board[pos->row][pos->col] == true)
+		{
+			return false;
+		}
+	}
+	
+	return true;
+}
+
